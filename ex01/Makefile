@@ -5,7 +5,7 @@ SRC 		= 	$(SRC_DIR)/main.cpp \
 
 CC 			= c++
 INCLUDES	= 
-CFLAGS 		= -Wall -Werror -Wextra -std=c++98 -Wshadow -pedantic $(INCLUDES) -g3
+CFLAGS 		= -Wall -Werror -Wextra -std=c++98 -Wshadow -pedantic $(INCLUDES)
 OBJECTS		= 	$(SRC:.cpp=.o)
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp

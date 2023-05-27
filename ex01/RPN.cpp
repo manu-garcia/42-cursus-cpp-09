@@ -66,7 +66,6 @@ int RPN::applyOperation(t_operation_type op, int a, int b)
 void RPN::reversePolishNotation(std::string expression)
 {
     std::stack<int> operands;
-    t_operation_type operation = OP_NONE;
 
     // Removes all spaces
     expression.erase(remove_if(expression.begin(), expression.end(), isspace), expression.end());
@@ -76,25 +75,21 @@ void RPN::reversePolishNotation(std::string expression)
     {
         if (isdigit(*token))
         {
-            if (operands.size() <= 1)
-            {
-                operands.push(atoi(std::string(token, token + 1).c_str()));
-            }
-            else
-            {
-                std::cerr << "Error: too many operands" << std::endl;
-                return;
-            }
+            operands.push(atoi(std::string(token, token + 1).c_str()));
         }
         else if (charToOperator(*token) != OP_NONE)
         {
-            if (operation == OP_NONE)
+            if (operands.size() >= 2)
             {
-                operation = charToOperator(*token);
+                int operand2 = operands.top();
+                operands.pop();
+                int operand1 = operands.top();
+                operands.pop();
+                operands.push(applyOperation(charToOperator(*token), operand1, operand2));
             }
             else
             {
-                std::cerr << "Error: Multiple operators. Not enough operands." << std::endl;
+                std::cerr << "Error: Not enough operands." << std::endl;
                 return;
             }
         }
@@ -104,27 +99,12 @@ void RPN::reversePolishNotation(std::string expression)
             return;
         }
 
-        if (operation && operands.size() == 2)
-        {
-            int operand2 = operands.top();
-            operands.pop();
-            int operand1 = operands.top();
-            operands.pop();
-            operands.push(applyOperation(operation, operand1, operand2));
-            operation = OP_NONE;
-        }
         token++;
     }
 
     if (operands.size() != 1)
     {
         std::cerr << "Error: Invalid number of operands." << std::endl;
-        return;
-    }
-
-    if (operation != OP_NONE)
-    {
-        std::cerr << "Error: Not enough operands. Operation pending..." << std::endl;
         return;
     }
 
